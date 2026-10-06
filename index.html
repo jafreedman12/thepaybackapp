@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F2EFE6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Payback</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#141414;--bg:#F2EFE6;--card:#FBFAF6;--muted:#4A4843;--soft:#5C5A55;--line:#CFC9BA;--line2:#B5AF9F;--tint:#E7E3D7;--red:#A8370A;--green:#1D6B45;--mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+button,input{font-family:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed}
+input::placeholder{color:#8A867D}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.phone{position:relative;width:100%;height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:var(--bg)}
+@media (min-width:600px){body{background:#DDD8CB}.phone{width:390px;height:844px;margin:32px auto;border-radius:44px;box-shadow:0 30px 80px rgba(20,20,20,.25)}}
+.scr{flex:1;min-height:0;display:flex;flex-direction:column;gap:20px;padding:24px 24px calc(28px + env(safe-area-inset-bottom))}
+.top{padding-top:calc(56px + env(safe-area-inset-top))}
+.mono{font-family:var(--mono)}
+.eyebrow{font:600 11px/1 var(--mono);letter-spacing:1.5px;text-transform:uppercase;color:var(--soft)}
+h1{margin:0;font-size:46px;line-height:1;font-weight:800;letter-spacing:-1.5px}
+h2{margin:0;font-size:32px;line-height:1.05;font-weight:800;letter-spacing:-1px}
+p{margin:0}
+.lede{font-size:15px;line-height:1.45;color:var(--muted)}
+.head{display:flex;flex-direction:column;gap:8px}
+.card{border:1.5px solid var(--ink);border-radius:16px;background:var(--card)}
+.cta{width:100%;height:56px;border:none;border-radius:14px;background:var(--ink);color:var(--bg);font-size:18px;font-weight:700}
+.cta:disabled{background:#D3CEC1;color:var(--soft)}
+.ghost{height:48px;border:1.5px solid var(--ink);border-radius:14px;background:transparent;font-size:15px;font-weight:600}
+.push{margin-top:auto}
+.pill{min-height:44px;padding:0 16px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600;background:var(--card);border:1.5px solid var(--line)}
+.pill.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip{height:44px;padding:0 16px;border-radius:999px;font:600 15px/1 var(--mono);background:transparent;border:1.5px solid var(--line2)}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.dash{border-bottom:1.5px dashed var(--line)}
+.note{font-size:14px;line-height:1.45;color:var(--muted)}
+.note.err{color:var(--red);font-weight:700}
+.box{display:flex;align-items:center;gap:4px;width:132px;height:52px;border:1.5px solid var(--line2);border-radius:12px;background:var(--bg);padding:0 12px;flex:none}
+.box input{flex:1;min-width:0;height:48px;border:none;background:transparent;text-align:right;font:700 22px/1 var(--mono);padding:0}
+.box input:focus{outline:none}
+.box:focus-within{outline:2px solid var(--ink);outline-offset:2px}
+.big{width:120px;height:84px;border:1.5px solid var(--line2);border-radius:16px;background:var(--bg);text-align:center;font:700 52px/1 var(--mono);padding:0}
+.field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--muted)}
+.field input{height:50px;border:1.5px solid var(--line2);border-radius:12px;padding:0 12px;font:400 16px/1 var(--mono);background:var(--card);min-width:0;width:100%}
+.check{flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--line2);display:flex;align-items:center;justify-content:center}
+.check.on{background:var(--ink);border-color:var(--ink)}
+.scroll{flex:1;min-height:0;overflow-y:auto;margin:0 -24px;padding:0 24px;display:flex;flex-direction:column;gap:18px;-webkit-overflow-scrolling:touch}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.link{min-height:32px;padding:0 4px;border:none;background:transparent;font-size:13px;font-weight:700;text-decoration:underline}
+.toast{position:absolute;left:16px;right:16px;top:calc(52px + env(safe-area-inset-top));border-radius:14px;background:var(--red);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 30px rgba(20,20,20,.25);z-index:5}
+.sheetbg{position:absolute;inset:0;background:rgba(20,20,20,.55);display:flex;flex-direction:column;justify-content:flex-end;z-index:6}
+.sheet{background:var(--bg);border-radius:28px 28px 0 0;padding:28px 24px calc(36px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:16px}
+.stat{border:1.5px solid var(--ink);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--card)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+</style>
+</head>
+<body>
+<div class="phone" id="app"></div>
+<script>
+(function () {
+  "use strict";
+  var PCT = 25; // % of held money returned per day under the limit
+
+  var GROUPS = [
+    { name: "Social", apps: ["Instagram", "Facebook", "TikTok", "Snapchat", "X", "Threads", "Reddit", "Pinterest"] },
+    { name: "Video & streaming", apps: ["YouTube", "Netflix", "Twitch", "Hulu", "Disney+"] },
+    { name: "Games", apps: ["Candy Crush", "Roblox", "Clash of Clans", "Royal Match", "Monopoly Go"] },
+    { name: "Shopping", apps: ["Amazon", "Temu", "Shein", "eBay", "Etsy"] },
+    { name: "News", apps: ["Apple News", "Google News", "CNN", "ESPN"] },
+    { name: "Dating", apps: ["Tinder", "Hinge", "Bumble"] }
+  ];
+
+  var S = {
+    screen: "welcome",
+    picked: { Instagram: true, TikTok: true },
+    custom: [], draft: "",
+    limitH: "1", limitM: "0",
+    stakeStr: "5", intervalStr: "15", capStr: "20",
+    method: "card", agreed: false,
+    used: 45, today: 0, held: 0, back: 0, streak: 0,
+    alert: false, toast: "", lastEarn: 0
+  };
+
+  var CHECK = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F2EFE6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.5 3 3 6-7"/></svg>';
+
+  function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function num(v) { var n = parseFloat(v); return isFinite(n) ? n : 0; }
+  function r2(n) { return Math.round(n * 100) / 100; }
+  function money(n) { return "$" + r2(n).toFixed(2); }
+  function cash(n) { return Number.isInteger(n) ? "$" + n : money(n); }
+  function dur(m) { m = Math.round(m); if (m < 60) return m + "m"; var h = Math.floor(m / 60), r = m % 60; return r ? h + "h " + r + "m" : h + "h"; }
+  function durLong(m) { m = Math.round(m); return m < 60 ? m + (m === 1 ? " minute" : " minutes") : dur(m); }
+
+  function groups() { var g = GROUPS.slice(); if (S.custom.length) g.push({ name: "Your apps", apps: S.custom }); return g; }
+  function allNames() { return groups().reduce(function (a, g) { return a.concat(g.apps); }, []); }
+
+  function D() {
+    var d = {};
+    d.limit = Math.round(num(S.limitH)) * 60 + Math.round(num(S.limitM));
+    d.stake = r2(num(S.stakeStr));
+    d.interval = Math.round(num(S.intervalStr));
+    d.cap = r2(num(S.capStr));
+    d.limitErr = "";
+    if (num(S.limitH) < 0 || num(S.limitM) < 0) d.limitErr = "Use positive numbers.";
+    else if (num(S.limitM) > 59) d.limitErr = "Minutes go up to 59.";
+    else if (d.limit < 1) d.limitErr = "Set at least 1 minute.";
+    else if (d.limit >= 1440) d.limitErr = "That is the whole day. Go lower.";
+    d.stakeErr = "";
+    if (d.stake < 0.5) d.stakeErr = "Charges start at $0.50.";
+    else if (d.interval < 1) d.stakeErr = "Blocks need to be at least 1 minute.";
+    else if (d.interval > 240) d.stakeErr = "Keep blocks to 4 hours or less.";
+    else if (d.cap < d.stake) d.stakeErr = "Daily max can’t be less than one charge.";
+    var on = allNames().filter(function (n) { return S.picked[n]; });
+    d.onCount = on.length;
+    d.apps = on.length === 0 ? "no apps yet" : on.length === 1 ? on[0] : on.length === 2 ? on[0] + " + " + on[1] : on[0] + " + " + (on.length - 1) + " more";
+    return d;
+  }
+
+  function stepHeader(n) {
+    return '<div class="top" style="padding-left:24px;padding-right:24px;display:flex;align-items:center;justify-content:space-between">' +
+      '<button data-a="back" aria-label="Back" style="width:44px;height:44px;margin-left:-10px;border:none;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#141414" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4 7 11l7 7"/></svg></button>' +
+      '<div class="mono" style="font-size:12px;font-weight:600;letter-spacing:1px;color:var(--soft)">STEP ' + n + ' OF 5</div><div style="width:44px"></div></div>' +
+      '<div style="margin:12px 24px 0;height:4px;border-radius:2px;background:#DDD8CB;overflow:hidden"><div style="height:100%;width:' + n * 20 + '%;background:var(--ink)"></div></div>';
+  }
+
+  var V = {};
+
+  V.welcome = function () {
+    return '<div class="scr top" style="padding-top:calc(64px + env(safe-area-inset-top));gap:28px">' +
+      '<div style="display:flex;align-items:center;gap:10px"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#141414" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="14" r="11"/><path d="M14 8v6l4 3"/><path d="M3 14h3"/></svg><div style="font-size:22px;font-weight:800;letter-spacing:-.5px">Payback</div></div>' +
+      '<div class="head" style="gap:14px"><h1>Your phone owes you time.</h1><p style="font-size:17px;line-height:1.45;color:var(--muted)">Set a limit. Put money on it. Go over and you pay. Stay under and you earn it back, one day at a time.</p></div>' +
+      '<div class="card" style="padding:18px;display:flex;flex-direction:column;gap:12px"><div class="eyebrow">How a week can go</div>' +
+      '<div class="row mono" style="font-size:14px"><span>Mon · over by 30m</span><span style="color:var(--red);font-weight:700">−$10.00</span></div>' +
+      '<div class="row mono" style="font-size:14px"><span>Tue · under limit</span><span style="color:var(--green);font-weight:700">+$2.50</span></div>' +
+      '<div class="row mono" style="font-size:14px"><span>Wed · under limit</span><span style="color:var(--green);font-weight:700">+$1.88</span></div>' +
+      '<div style="border-top:1.5px dashed var(--line);padding-top:12px;font-size:14px;color:var(--muted)">Lose time, lose money. Win time, win it back.</div></div>' +
+      '<div class="push" style="display:flex;flex-direction:column;gap:12px"><button class="cta" data-a="go" data-v="apps">Get started</button><div class="mono" style="text-align:center;font-size:12px;color:var(--soft)">money = time</div></div></div>';
+  };
+
+  V.apps = function (d) {
+    var h = stepHeader(1) + '<div class="scr"><div class="head"><h2>What’s eating your time?</h2><p class="lede">Tap the apps that get a limit. They share one daily budget.</p></div><div class="scroll">';
+    groups().forEach(function (g, gi) {
+      var allOn = g.apps.every(function (n) { return S.picked[n]; });
+      h += '<div style="display:flex;flex-direction:column;gap:10px"><div class="row"><div class="eyebrow">' + esc(g.name) + '</div><button class="link" data-a="groupAll" data-v="' + gi + '">' + (allOn ? "Clear" : "Select all") + '</button></div><div style="display:flex;flex-wrap:wrap;gap:8px">';
+      g.apps.forEach(function (n) {
+        var on = !!S.picked[n];
+        h += '<button class="pill' + (on ? " on" : "") + '" aria-pressed="' + on + '" data-a="toggleApp" data-v="' + esc(n) + '">' + (on ? CHECK : "") + esc(n) + '</button>';
+      });
+      h += '</div></div>';
+    });
+    h += '<div style="display:flex;flex-direction:column;gap:10px;padding-bottom:4px"><div class="eyebrow">Something else?</div><div style="display:flex;gap:8px">' +
+      '<label style="flex:1;min-width:0;display:flex"><span class="sr">App name</span><input id="draft" type="text" placeholder="Type an app name" maxlength="30" value="' + esc(S.draft) + '" style="flex:1;min-width:0;height:44px;border:1.5px solid var(--line2);border-radius:999px;padding:0 16px;font-size:16px;background:var(--card)"></label>' +
+      '<button data-a="addCustom" style="flex:none;height:44px;padding:0 18px;border:1.5px solid var(--ink);border-radius:999px;background:transparent;font-size:15px;font-weight:700">Add</button></div></div></div>';
+    h += '<div style="display:flex;flex-direction:column;gap:10px"><div style="text-align:center;font-size:13px;color:var(--soft)">' + (d.onCount ? d.onCount + (d.onCount === 1 ? " app" : " apps") + " selected" : "Pick at least one") + '</div>' +
+      '<button class="cta" data-a="go" data-v="limit"' + (d.onCount ? "" : " disabled") + '>Continue</button></div></div>';
+    return h;
+  };
+
+  V.limit = function (d) {
+    var chips = [15, 30, 45, 60, 90, 120].map(function (m) {
+      return '<button class="chip' + (!d.limitErr && d.limit === m ? " on" : "") + '" data-a="pickLimit" data-v="' + m + '">' + dur(m) + '</button>';
+    }).join("");
+    var note = d.limitErr || "That’s " + dur(d.limit) + " a day, about " + Math.round(d.limit * 7 / 6) / 10 + " hours a week.";
+    return stepHeader(2) + '<div class="scr" style="gap:22px"><div class="head"><h2>How much is enough?</h2><p class="lede">Type your daily limit across ' + esc(d.apps) + '.</p></div>' +
+      '<div class="card" style="border-radius:20px;padding:24px 20px;display:flex;flex-direction:column;align-items:center;gap:16px"><div style="display:flex;align-items:flex-start;justify-content:center;gap:14px">' +
+      '<label class="mono" style="display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;color:var(--soft)"><input class="big" data-f="limitH" type="number" inputmode="numeric" min="0" max="23" value="' + esc(S.limitH) + '">hours</label>' +
+      '<div class="mono" style="font-size:44px;font-weight:700;line-height:84px;color:#9A9485">:</div>' +
+      '<label class="mono" style="display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;color:var(--soft)"><input class="big" data-f="limitM" type="number" inputmode="numeric" min="0" max="59" value="' + esc(S.limitM) + '">minutes</label></div>' +
+      '<div class="note' + (d.limitErr ? " err" : "") + '" id="limitNote">' + esc(note) + '</div></div>' +
+      '<div style="display:flex;flex-direction:column;gap:10px"><div class="eyebrow">Quick picks</div><div style="display:flex;flex-wrap:wrap;gap:8px">' + chips + '</div></div>' +
+      '<div class="push"><button class="cta" data-a="go" data-v="stake"' + (d.limitErr ? " disabled" : "") + '>Continue</button></div></div>';
+  };
+
+  V.stake = function (d) {
+    var chips = [1, 5, 10, 25].map(function (v) {
+      return '<button class="chip' + (d.stake === v ? " on" : "") + '" data-a="pickStake" data-v="' + v + '">$' + v + '</button>';
+    }).join("");
+    var hour = Math.min(d.cap, Math.ceil(60 / Math.max(1, d.interval)) * d.stake);
+    var note = d.stakeErr || "Go an hour over and you pay " + money(hour) + ". Each day under your limit returns " + PCT + "% of what’s held.";
+    function line(title, sub, inner, last) {
+      return '<label class="row' + (last ? "" : " dash") + '" style="padding:12px 0"><span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:16px;font-weight:700">' + title + '</span><span style="font-size:13px;color:var(--soft)">' + sub + '</span></span>' + inner + '</label>';
+    }
+    return stepHeader(3) + '<div class="scr" style="gap:18px"><div class="head"><h2>What’s it worth to you?</h2><p class="lede">Set your own price for going over. Make it sting.</p></div>' +
+      '<div class="card" style="border-radius:20px;padding:6px 16px">' +
+      line("Charge", "Each time a block runs over", '<span class="box"><span class="mono" style="font-size:22px;font-weight:700;color:var(--red)">$</span><input data-f="stakeStr" type="number" inputmode="decimal" min="0.5" step="0.5" value="' + esc(S.stakeStr) + '"></span>') +
+      line("Block length", "Minutes over your limit per charge", '<span class="box"><input data-f="intervalStr" type="number" inputmode="numeric" min="1" max="240" value="' + esc(S.intervalStr) + '"><span class="mono" style="font-size:14px;font-weight:600;color:var(--soft)">min</span></span>') +
+      line("Daily max", "Most you can lose in a day", '<span class="box"><span class="mono" style="font-size:22px;font-weight:700">$</span><input data-f="capStr" type="number" inputmode="decimal" min="0.5" step="1" value="' + esc(S.capStr) + '"></span>', true) +
+      '</div><div style="display:flex;flex-direction:column;gap:10px"><div class="eyebrow">Quick picks for the charge</div><div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">' + chips + '</div></div>' +
+      '<div class="note' + (d.stakeErr ? " err" : "") + '" style="border-radius:14px;padding:14px 16px;background:var(--tint)">' + esc(note) + '</div>' +
+      '<div class="push"><button class="cta" data-a="go" data-v="pay"' + (d.stakeErr ? " disabled" : "") + '>Continue</button></div></div>';
+  };
+
+  V.pay = function () {
+    var card = S.method === "card";
+    var tab = function (on) { return 'style="height:44px;border:none;border-radius:10px;font-size:15px;font-weight:700;' + (on ? "background:var(--card);box-shadow:0 1px 3px rgba(20,20,20,.15)" : "background:transparent;color:var(--muted)") + '"'; };
+    var body = card
+      ? '<div style="display:flex;flex-direction:column;gap:12px"><label class="field">Card number<input type="text" inputmode="numeric" autocomplete="off" placeholder="1234 1234 1234 1234"></label>' +
+        '<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px"><label class="field">Expiry<input type="text" autocomplete="off" placeholder="MM/YY"></label><label class="field">CVC<input type="text" autocomplete="off" placeholder="123"></label><label class="field">ZIP<input type="text" autocomplete="off" placeholder="10001"></label></div>' +
+        '<div style="font-size:12px;color:var(--soft)">Prototype only. Don’t enter real card details.</div></div>'
+      : '<div style="display:flex;flex-direction:column;gap:12px"><button class="card" style="height:56px;border-radius:14px;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#141414" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8h15L10 3.5z"/><path d="M4.5 8v7M8 8v7M12 8v7M15.5 8v7M2.5 17h15"/></svg>Connect your bank</button>' +
+        '<div style="font-size:13px;line-height:1.45;color:var(--soft)">Sign in to your bank to link a checking account. Bank charges take 3–5 business days to clear, so Payback may pause your earn-backs until they do.</div></div>';
+    return stepHeader(4) + '<div class="scr"><div class="head"><h2>Put money on it.</h2><p class="lede">Nothing is charged today. You only pay when you go over.</p></div>' +
+      '<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:4px;border-radius:14px;background:#E2DDCF"><button data-a="method" data-v="card" aria-pressed="' + card + '" ' + tab(card) + '>Card</button><button data-a="method" data-v="bank" aria-pressed="' + !card + '" ' + tab(!card) + '>Bank (ACH)</button></div>' +
+      body +
+      '<div style="display:flex;gap:10px;align-items:flex-start;padding:14px;border-radius:12px;background:var(--tint)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#141414" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:1px"><rect x="4" y="9" width="12" height="8.5" rx="2"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9"/></svg><div style="font-size:13px;line-height:1.45;color:var(--muted)">Payment details go straight to [PAYMENT PROCESSOR]. Payback never sees or stores your card or account number.</div></div>' +
+      '<div class="push"><button class="cta" data-a="go" data-v="confirm">Continue</button></div></div>';
+  };
+
+  V.confirm = function (d) {
+    function r(k, v, cls, last) { return '<div class="row' + (last ? "" : " dash") + '" style="padding:12px 0;font-size:15px"><span style="color:var(--muted)">' + k + '</span><span ' + cls + '>' + v + '</span></div>'; }
+    var m = 'class="mono" style="font-weight:700"';
+    return stepHeader(5) + '<div class="scr" style="gap:18px"><h2>The deal.</h2><div class="card" style="padding:6px 16px">' +
+      r("Apps", esc(d.apps), 'style="font-weight:700;text-align:right"') +
+      r("Daily limit", dur(d.limit), m) +
+      r("Cost per " + durLong(d.interval) + " over", cash(d.stake), 'class="mono" style="font-weight:700;color:var(--red)"') +
+      r("Daily max", money(d.cap), m) +
+      r("Paying with", S.method === "card" ? "Card" : "Bank (ACH)", 'style="font-weight:700"', true) +
+      '</div><div style="display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.45;color:var(--muted)">' +
+      '<div style="display:flex;gap:10px"><span class="mono" style="font-weight:700;color:var(--ink)">01</span><span>Money you’re charged is held by Payback, not gone for good.</span></div>' +
+      '<div style="display:flex;gap:10px"><span class="mono" style="font-weight:700;color:var(--ink)">02</span><span>Each day under your limit returns ' + PCT + '% of what’s held.</span></div>' +
+      '<div style="display:flex;gap:10px"><span class="mono" style="font-weight:700;color:var(--ink)">03</span><span>Turning off Payback’s Screen Time access, or deleting the app, forfeits what’s held.</span></div></div>' +
+      '<button data-a="agree" aria-pressed="' + S.agreed + '" style="display:flex;align-items:center;gap:12px;min-height:44px;padding:0;border:none;background:transparent;text-align:left"><span class="check' + (S.agreed ? " on" : "") + '">' + (S.agreed ? CHECK : "") + '</span><span style="font-size:15px;font-weight:600">I agree to the deal and the [TERMS OF SERVICE].</span></button>' +
+      '<div class="push"><button class="cta" data-a="lockIn"' + (S.agreed ? "" : " disabled") + '>Lock it in</button></div></div>';
+  };
+
+  V.home = function (d) {
+    var over = Math.max(0, S.used - d.limit), isOver = S.used > d.limit;
+    var fill = Math.min(100, Math.round(S.used / Math.max(1, d.limit) * 100));
+    var bar = isOver ? "#E2703A" : S.used === d.limit ? "#E2B33A" : "#F2EFE6";
+    var status = dur(d.limit - S.used) + " left before charges start";
+    if (S.used === d.limit) status = "At your limit. The next " + durLong(d.interval) + " costs " + cash(d.stake) + ".";
+    if (isOver) status = dur(over) + " over · " + money(S.today) + " charged today";
+    var win = S.held * PCT / 100;
+    var winTxt = S.held > 0 ? (isOver ? "Today is lost. Win tomorrow to get " + money(win) + " back." : "Stay under today and get " + money(win) + " back tonight.") : "Nothing held. Keep it that way.";
+    var h = '<div class="scr top" style="padding-top:calc(60px + env(safe-area-inset-top));gap:18px">' +
+      '<div class="row"><div style="font-size:22px;font-weight:800;letter-spacing:-.5px">Today</div><div class="mono" style="font-size:12px;font-weight:600;padding:8px 12px;border-radius:999px;border:1.5px solid var(--ink)">' + S.streak + '-day streak</div></div>' +
+      '<div style="border-radius:20px;background:var(--ink);color:var(--bg);padding:22px;display:flex;flex-direction:column;gap:14px">' +
+      '<div class="eyebrow" style="color:#B9B4A7">' + esc(d.apps) + '</div>' +
+      '<div style="display:flex;align-items:baseline;gap:8px"><span class="mono" style="font-size:52px;font-weight:700;line-height:1;letter-spacing:-2px">' + dur(S.used) + '</span><span class="mono" style="font-size:16px;color:#B9B4A7">/ ' + dur(d.limit) + '</span></div>' +
+      '<div style="height:10px;border-radius:5px;background:#3A3936;overflow:hidden"><div style="height:100%;width:' + fill + '%;border-radius:5px;background:' + bar + '"></div></div>' +
+      '<div style="font-size:14px;line-height:1.4;' + (isOver ? "color:#F0A27F;font-weight:700" : "color:#CFCAC0") + '">' + status + '</div></div>' +
+      '<div class="grid2"><div class="stat"><div style="font-size:13px;color:var(--muted)">Held by Payback</div><div class="mono" style="font-size:24px;font-weight:700;color:var(--red)">' + money(S.held) + '</div></div>' +
+      '<div class="stat"><div style="font-size:13px;color:var(--muted)">Earned back</div><div class="mono" style="font-size:24px;font-weight:700;color:var(--green)">' + money(S.back) + '</div></div></div>' +
+      '<div style="font-size:15px;line-height:1.45;color:var(--muted)">' + winTxt + '</div>' +
+      '<div class="push" style="border:1.5px dashed #9A9485;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px"><div class="eyebrow">Prototype controls</div><div class="grid2" style="gap:8px">' +
+      '<button data-a="addTime" style="height:48px;border:1.5px solid var(--ink);border-radius:12px;background:transparent;font-size:15px;font-weight:700">+' + durLong(d.interval) + ' scrolling</button>' +
+      '<button data-a="endDay" style="height:48px;border:none;border-radius:12px;background:var(--ink);color:var(--bg);font-size:15px;font-weight:700">End the day</button></div></div></div>';
+    if (S.toast) h += '<div class="toast" role="status"><div style="flex:1;font-size:15px;font-weight:600;line-height:1.35">' + esc(S.toast) + '</div><button data-a="hideToast" aria-label="Dismiss" style="flex:none;width:44px;height:44px;margin:-10px -10px -10px 0;border:none;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="m4 4 8 8M12 4l-8 8"/></svg></button></div>';
+    if (S.alert) h += '<div class="sheetbg"><div class="sheet" role="alertdialog" aria-label="Limit reached">' +
+      '<div style="width:52px;height:52px;border-radius:26px;background:var(--red);display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="13" r="9.5"/><path d="M13 8v5.5M13 17.5v.01"/></svg></div>' +
+      '<h3 style="margin:0;font-size:30px;line-height:1.05;font-weight:800;letter-spacing:-1px">Time’s up.</h3>' +
+      '<p style="font-size:16px;line-height:1.45;color:var(--muted)">You’ve used your ' + dur(d.limit) + ' on ' + esc(d.apps) + '. From now on, every ' + durLong(d.interval) + ' costs you <strong class="mono" style="color:var(--red)">' + cash(d.stake) + '</strong>.</p>' +
+      '<button class="cta" style="font-size:17px" data-a="closeAlert">Put the phone down</button>' +
+      '<button class="ghost" data-a="closeAlert">Keep going and pay ' + cash(d.stake) + ' per ' + durLong(d.interval) + '</button></div></div>';
+    return h;
+  };
+
+  function resultScreen(bg, eyebrowColor, eyebrow, big, bigColor, title, body, extra, btn) {
+    return '<div class="scr" style="padding-top:calc(96px + env(safe-area-inset-top));gap:22px;background:' + bg + ';color:var(--bg)">' +
+      '<div class="eyebrow" style="font-size:12px;color:' + eyebrowColor + '">' + eyebrow + '</div>' +
+      '<div class="mono" style="font-size:72px;font-weight:700;line-height:1;letter-spacing:-3px;color:' + bigColor + '">' + big + '</div>' +
+      '<h2 style="line-height:1.1">' + title + '</h2><p style="font-size:16px;line-height:1.45;opacity:.85">' + body + '</p>' + extra +
+      '<div class="push"><button class="cta" style="background:var(--bg);color:var(--ink)" data-a="nextDay">' + btn + '</button></div></div>';
+  }
+
+  V.earned = function (d) {
+    var got = S.lastEarn > 0;
+    return resultScreen("var(--green)", "#CFE6D8", "Day won", "+" + money(S.lastEarn), "var(--bg)",
+      got ? "You took some back." : "Clean day. Nothing owed.",
+      got ? "You stayed under " + dur(d.limit) + ", so " + PCT + "% of your held money is on its way back to you." : "You stayed under " + dur(d.limit) + " and Payback isn’t holding any of your money. That’s the goal.",
+      '<div class="grid2"><div style="border:1.5px solid #CFE6D8;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px"><span style="font-size:13px">Still held</span><span class="mono" style="font-size:20px;font-weight:700">' + money(S.held) + '</span></div>' +
+      '<div style="border:1.5px solid #CFE6D8;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px"><span style="font-size:13px">Streak</span><span class="mono" style="font-size:20px;font-weight:700">' + S.streak + (S.streak === 1 ? " day" : " days") + '</span></div></div>',
+      "Start tomorrow");
+  };
+
+  V.lost = function (d) {
+    return resultScreen("var(--ink)", "#F0A27F", "Day lost", "−" + money(S.today), "#F0A27F",
+      "Your phone won today.",
+      "You went " + dur(Math.max(0, S.used - d.limit)) + " over. That money is held, not gone. Stay under your limit tomorrow and start taking it back.",
+      '<div class="row" style="border:1.5px solid #4A4843;border-radius:16px;padding:14px"><span style="font-size:14px">Total held</span><span class="mono" style="font-size:20px;font-weight:700">' + money(S.held) + '</span></div>',
+      "Try again tomorrow");
+  };
+
+  var PREV = { apps: "welcome", limit: "apps", stake: "limit", pay: "stake", confirm: "pay" };
+
+  var A = {
+    go: function (to) {
+      var d = D();
+      if (to === "limit" && !d.onCount) return;
+      if (to === "stake" && d.limitErr) return;
+      if (to === "pay" && d.stakeErr) return;
+      S.screen = to;
+    },
+    back: function () { S.screen = PREV[S.screen] || "welcome"; },
+    toggleApp: function (n) { S.picked[n] = !S.picked[n]; },
+    groupAll: function (i) {
+      var g = groups()[+i], allOn = g.apps.every(function (n) { return S.picked[n]; });
+      g.apps.forEach(function (n) { S.picked[n] = !allOn; });
+    },
+    addCustom: function () {
+      var el = document.getElementById("draft");
+      var n = (el ? el.value : S.draft).trim().slice(0, 30);
+      if (!n) return;
+      var match = allNames().filter(function (x) { return x.toLowerCase() === n.toLowerCase(); })[0];
+      if (!match) { S.custom.push(n); match = n; }
+      S.picked[match] = true; S.draft = "";
+    },
+    pickLimit: function (m) { m = +m; S.limitH = String(Math.floor(m / 60)); S.limitM = String(m % 60); },
+    pickStake: function (v) { S.stakeStr = String(v); },
+    method: function (m) { S.method = m; },
+    agree: function () { S.agreed = !S.agreed; },
+    lockIn: function () { if (!S.agreed) return; var d = D(); S.screen = "home"; S.used = Math.max(0, d.limit - d.interval); S.today = 0; },
+    addTime: function () {
+      var d = D(), used = S.used + d.interval;
+      var blocks = used > d.limit ? Math.ceil((used - d.limit) / d.interval) : 0;
+      var newToday = Math.min(d.cap, r2(blocks * d.stake));
+      var charge = Math.max(0, r2(newToday - S.today));
+      var crossed = S.used < d.limit && used >= d.limit;
+      var t = "";
+      if (charge > 0) t = money(charge) + " charged. Next charge in " + durLong(d.interval) + ".";
+      else if (used > d.limit && newToday >= d.cap) t = "Daily max of " + money(d.cap) + " reached. No more charges today.";
+      S.used = used; S.today = newToday; S.held = r2(S.held + charge); S.alert = crossed; S.toast = crossed ? "" : t;
+    },
+    endDay: function () {
+      var d = D();
+      S.toast = ""; S.alert = false;
+      if (S.used <= d.limit) {
+        var earn = Math.round(S.held * PCT) / 100;
+        S.held = r2(S.held - earn); S.back = r2(S.back + earn); S.lastEarn = earn; S.streak++; S.screen = "earned";
+      } else { S.streak = 0; S.screen = "lost"; }
+    },
+    nextDay: function () { var d = D(); S.used = Math.max(0, d.limit - d.interval); S.today = 0; S.screen = "home"; S.toast = ""; },
+    closeAlert: function () { S.alert = false; },
+    hideToast: function () { S.toast = ""; }
+  };
+
+  var app = document.getElementById("app");
+  var lastScreen = null;
+  function render() {
+    var d = D();
+    app.innerHTML = V[S.screen](d);
+    if (S.screen !== lastScreen) { lastScreen = S.screen; var sc = app.querySelector(".scroll"); if (sc) sc.scrollTop = 0; }
+  }
+
+  app.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-a]");
+    if (!b || b.disabled) return;
+    var scroller = app.querySelector(".scroll"), top = scroller ? scroller.scrollTop : 0;
+    A[b.getAttribute("data-a")](b.getAttribute("data-v"));
+    render();
+    var s2 = app.querySelector(".scroll"); if (s2 && S.screen === "apps") s2.scrollTop = top;
+  });
+  // Typed numbers: update on change so the keyboard stays open while typing
+  app.addEventListener("input", function (e) {
+    var f = e.target.getAttribute("data-f");
+    if (e.target.id === "draft") { S.draft = e.target.value; return; }
+    if (f) { S[f] = e.target.value; patch(); }
+  });
+  // Update the note, quick-pick highlight and Continue button without redrawing (keeps the keyboard open)
+  function patch() {
+    var d = D(), cta = app.querySelector(".push .cta"), note, err, hour;
+    if (S.screen === "limit") {
+      err = d.limitErr;
+      note = err || "That’s " + dur(d.limit) + " a day, about " + Math.round(d.limit * 7 / 6) / 10 + " hours a week.";
+      app.querySelectorAll('[data-a="pickLimit"]').forEach(function (c) { c.classList.toggle("on", !err && +c.getAttribute("data-v") === d.limit); });
+    } else if (S.screen === "stake") {
+      err = d.stakeErr;
+      hour = Math.min(d.cap, Math.ceil(60 / Math.max(1, d.interval)) * d.stake);
+      note = err || "Go an hour over and you pay " + money(hour) + ". Each day under your limit returns " + PCT + "% of what’s held.";
+      app.querySelectorAll('[data-a="pickStake"]').forEach(function (c) { c.classList.toggle("on", +c.getAttribute("data-v") === d.stake); });
+    } else return;
+    var n = app.querySelector(".note");
+    if (n) { n.textContent = note; n.classList.toggle("err", !!err); }
+    if (cta) cta.disabled = !!err;
+  }
+  app.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && e.target.id === "draft") { A.addCustom(); render(); var el = document.getElementById("draft"); if (el) el.focus(); }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
